@@ -23,8 +23,8 @@ struct ISFexps
     Ntheta::Int64
 end
 
-function ISFexps(ndim::Integer, order::Integer, rmax, Nr, Ntheta)
-    return ISFexps(ISFPolyExps(ndim, 1, order), ISFPolyExps(1, 0, div(order-1,2)), rmax, Nr, Ntheta)
+function ISFexps(ndim::Integer, Uorder::Integer, Sorder::Integer, rmax, Nr, Ntheta)
+    return ISFexps(ISFPolyExps(ndim, 1, Uorder), ISFPolyExps(1, 0, div(Sorder-1,2)), rmax, Nr, Ntheta)
 end
 
 struct ISFmodel
@@ -43,8 +43,8 @@ function DataToExp(xs, mexp)
 end
 
 # Two dimesional ISF
-function ISFconstruct(ndim, order, vsr, vsi, lr, li; rmax, Nr, Ntheta)
-    mexp = ISFexps(ndim, order, rmax, Nr, Ntheta)
+function ISFconstruct(ndim, Uorder, Sorder, vsr, vsi, lr, li; rmax, Nr, Ntheta)
+    mexp = ISFexps(ndim, Uorder, Sorder, rmax, Nr, Ntheta)
     mpar = ISFmodel(
         zeros(2, size(mexp.U, 2)), # U
         zeros(1, size(mexp.f, 2)),    # fr
@@ -331,7 +331,7 @@ end
 
 # U is the submersion
 # R is the conjugate dynamics
-function ISFData(xs, ys, DF, vars, order, SIGMA; U=nothing, S=nothing, dt=1.0, rmax=0.2, Nr=12, Ntheta=24, steps=32000, onlyU = false, onlyS=false, 
+function ISFData(xs, ys, DF, vars, Uorder, Sorder, SIGMA; U=nothing, S=nothing, dt=1.0, rmax=0.2, Nr=12, Ntheta=24, steps=32000, onlyU = false, onlyS=false, 
                 mpar0 = nothing, mexp0 = nothing)
     # the linear part
     sel = vars[1]
@@ -351,7 +351,7 @@ function ISFData(xs, ys, DF, vars, order, SIGMA; U=nothing, S=nothing, dt=1.0, r
         mpar = deepcopy(mpar0)
         mexp = deepcopy(mexp0)
     elseif U == nothing
-        mpar, mexp = ISFconstruct(length(xs[1]), order, vsr, vsi, real(rightvals[sel]), imag(rightvals[sel]), rmax=rmax, Nr=Nr, Ntheta=Ntheta)
+        mpar, mexp = ISFconstruct(length(xs[1]), Uorder, Sorder, vsr, vsi, real(rightvals[sel]), imag(rightvals[sel]), rmax=rmax, Nr=Nr, Ntheta=Ntheta)
     else
         mpar, mexp = PolyModelToISF(U, rmax=rmax, Nr=Nr, Ntheta=Ntheta)
     end
@@ -398,7 +398,7 @@ function ISFData(xs, ys, DF, vars, order, SIGMA; U=nothing, S=nothing, dt=1.0, r
     function cb(x)
         rmat = ForwardDiff.jacobian(x -> Smod(mpar, mexp, x), Umod(mpar, mexp, zero(xs[1])))
         umat = ForwardDiff.jacobian(x -> Umod(mpar, mexp, x), zero(xs[1]))
-        println("       umat norm = ", (@sprintf "%.6e" sqrt(sum(umat.^2))), " S=", SIGMA, " O=", PolyOrder(mexp.U))
+        println("       umat norm = ", (@sprintf "%.6e" sqrt(sum(umat.^2))), " S=", SIGMA, " OU=", PolyOrder(mexp.U), " OS=", 2*PolyOrder(mexp.fr)+1)
         println("       constraint= ", (@sprintf "%.6e" constraintLoss(mpar.U, At, Bt)))
         freq = abs.(angle.(eigvals(rmat))/dt)
         damp = -log.(abs.(eigvals(rmat)))./(dt*freq)

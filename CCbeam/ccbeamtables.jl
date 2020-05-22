@@ -82,7 +82,7 @@ print("MAP O($(order)) & ")
 println(toLatexExp(residual(Ro3, Wo3, xs, ys), 4), " & ",
         toLatexExp(residual(Ro2, Wo2, xs, ys), 4), " & ",
         toLatexExp(residual(Ro1, Wo1, xs, ys), 4), " \\\\")
-for order in [3 5]
+for order in [3 5 7]
     for SIGMA in [1]
         @load "MapFit$(NAME)S$(SIGMA)O$(order).bson" DT Wo1 Ro1 Ws1 Rs1 W1 R1 U1 S1 mpar1 mexp1 Wo2 Ro2 Ws2 Rs2 W2 R2 U2 S2 mpar2 mexp2 Wo3 Ro3 Ws3 Rs3 W3 R3 U3 S3 mpar3 mexp3
         print("DATA O($(order)) & ")
@@ -98,7 +98,7 @@ println("\\begin{tabular}{l | l | l | l | l | l | l | l | l | l}")
 println(" & \$\\omega_1\$ & \$\\omega_2\$ & \$\\omega_3\$ & \$\\zeta_1\$ & \$\\zeta_2\$ & \$\\zeta_3\$ & \$\\beth_1\$ & \$\\beth_2\$ & \$\\beth_3\$ \\\\ \n\\hline")
 print("MAP O($(order))")
 spectralCoeffs((Ro3, Ro2, Ro1,), DT)
-for order in [3 5]
+for order in [3 5 7]
     for SIGMA in [1]
         @load "MapFit$(NAME)S$(SIGMA)O$(order).bson" DT Wo1 Ro1 Ws1 Rs1 W1 R1 U1 S1 mpar1 mexp1 Wo2 Ro2 Ws2 Rs2 W2 R2 U2 S2 mpar2 mexp2 Wo3 Ro3 Ws3 Rs3 W3 R3 U3 S3 mpar3 mexp3
         print("DATA O($(order))")

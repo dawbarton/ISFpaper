@@ -210,7 +210,7 @@ end
 #         plot(damp, amps, "--", color="gray")
 #     end
 
-for order in [3 5]
+for order in [3 5 7]
 for SIGMA in [1]
     @load "MapFit$(NAME)S$(SIGMA)O$(order).bson" DT Wo1 Ro1 Ws1 Rs1 W1 R1 U1 S1 mpar1 mexp1 Wo2 Ro2 Ws2 Rs2 W2 R2 U2 S2 mpar2 mexp2 Wo3 Ro3 Ws3 Rs3 W3 R3 U3 S3 mpar3 mexp3
     
