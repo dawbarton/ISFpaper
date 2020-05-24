@@ -398,7 +398,7 @@ function ISFData(xs, ys, DF, vars, Uorder, Sorder, SIGMA; U=nothing, S=nothing, 
     function cb(x)
         rmat = ForwardDiff.jacobian(x -> Smod(mpar, mexp, x), Umod(mpar, mexp, zero(xs[1])))
         umat = ForwardDiff.jacobian(x -> Umod(mpar, mexp, x), zero(xs[1]))
-        println("       umat norm = ", (@sprintf "%.6e" sqrt(sum(umat.^2))), " S=", SIGMA, " OU=", PolyOrder(mexp.U), " OS=", 2*PolyOrder(mexp.fr)+1)
+        println("       umat norm = ", (@sprintf "%.6e" sqrt(sum(umat.^2))), " S=", SIGMA, " OU=", PolyOrder(mexp.U), " OS=", 2*PolyOrder(mexp.f)+1)
         println("       constraint= ", (@sprintf "%.6e" constraintLoss(mpar.U, At, Bt)))
         freq = abs.(angle.(eigvals(rmat))/dt)
         damp = -log.(abs.(eigvals(rmat)))./(dt*freq)
